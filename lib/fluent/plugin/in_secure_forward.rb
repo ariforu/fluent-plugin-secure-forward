@@ -273,6 +273,12 @@ module Fluent
             # cleanup closed session instance
             @sessions.delete_if(&:closed?)
             log.trace "session instances:", all: @sessions.size, closed: @sessions.select(&:closed?).size
+            # Verify client cert
+            if @sock.peer_cert.verify(ca_cert.public_key)
+                puts "Certificate verified"
+            else
+                puts "Certificate invalid"
+            end
           end
         end
       rescue OpenSSL::SSL::SSLError => e
